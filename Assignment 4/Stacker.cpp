@@ -45,6 +45,8 @@ Stacker::Stacker(string file)
 
 void Stacker::Stack(int numFiles) 
 {
+	int tempFileNum = 1;		// Created to keep track of the number of files so that I dont have to convert the string to an int.
+
 	for (int i=0; i < numFiles - 1; i++)
 	{
 		ifstream iFile;
@@ -57,21 +59,50 @@ void Stacker::Stack(int numFiles)
 			fileNum.insert(0, "0");
 		}
 		
-		cout << filename + fileNum + ".ppm" << endl;
+		cout << filename + fileNum + ".ppm" << endl; // use this to generate what file to open
 
 
-		iFile.open(filename.c_str());
+		iFile.open((filename + fileNum + ".ppm").c_str());
 		getline(iFile, temp);
 
 		iFile >> height >> width >> max_color;
 
-		/*for (int i = 0; i < height*width; i++)
+		for (int i = 0; i < height*width; i++)
 		{
 			pixel a;
 			iFile >> a.r >> a.g >> a.b;
-			pixels.push_back(a);
-			//iFile.get();
-		}*/
+			pixels[i].r += a.r;				// do the adding of the pixels
+			pixels[i].g += a.g;
+			pixels[i].b += a.b;			
+		}
+
 		iFile.close();
+		tempFileNum++;
 	}
+
+	for (int i = 0; i < height*width; i++)
+	{
+		pixels[i].r /= tempFileNum;				// do the adding of the pixels
+		pixels[i].g /= tempFileNum;
+		pixels[i].b /= tempFileNum;
+	}
+}
+
+void Stacker::saveToDisk(string outfile)
+{
+	ofstream oFile;
+
+	oFile.open(outfile.c_str());
+
+	oFile << "P3\n"                                 // Prints header at beginning of file.
+		<< width << " " << height << "\n"
+		<< max_color << "\n";
+
+	for (int i = 0; i < width*height; i++)
+	{
+		oFile << pixels[i].r << " " << pixels[i].g << " " << pixels[i].b;
+		oFile << '\n';
+	}
+
+	oFile.close();
 }

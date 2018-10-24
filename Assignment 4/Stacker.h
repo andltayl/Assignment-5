@@ -24,5 +24,6 @@ public:
 	Stacker();
 	~Stacker();
 	void Stack(int numFiles);
+	void saveToDisk(string outfile);
 };
 
