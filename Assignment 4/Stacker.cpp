@@ -1,39 +1,24 @@
 #include "Stacker.h"
 
-
-Stacker::~Stacker()
-{
-}
-
-Stacker::Stacker() {
-
-}
-
 Stacker::Stacker(string file)
 {
-	cout << filename << endl;
 	ifstream iFile;
+
+	magic_number = "P3";
 
 	iFile.open(file.c_str());
 	getline(iFile, temp);
 
 	iFile >> height >> width >> max_color;            // Store the number of rows and columns.
 
-	
-	cout << "\n" << height << width << max_color << endl;
 	for (int i = 0; i < height*width; i++)
 	{
 		pixel a;
 		iFile >> a.r >> a.g >> a.b;
 		pixels.push_back(a);
 	}
-	/*for (int i = 0; i < width*height; i++)
-	{
-		cout << pixels[i].r << " " << pixels[i].g << " " << pixels[i].b;
-		cout << endl;
-	}*/
-	
-	for (int i = 0; i < 7; i++)
+
+	for (int i = 0; i < 7; i++)						// get rid of the last 7 characters in the filename (001.ppm)
 	{
 		file.pop_back();
 	}
@@ -94,8 +79,8 @@ void Stacker::saveToDisk(string outfile)
 
 	oFile.open(outfile.c_str());
 
-	oFile << "P3\n"                                 // Prints header at beginning of file.
-		<< width << " " << height << "\n"
+	oFile << magic_number << endl                                 // Prints header at beginning of file.
+		<< height << " " << width << "\n"
 		<< max_color << "\n";
 
 	for (int i = 0; i < width*height; i++)
